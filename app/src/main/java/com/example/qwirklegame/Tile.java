@@ -1,5 +1,7 @@
 package com.example.qwirklegame;
 
+import android.graphics.drawable.Drawable;
+
 public class Tile {
 
     public Shape Shape;
@@ -8,10 +10,11 @@ public class Tile {
     public Tile(Color color, Shape shape) {
         this.Color = color;
         this.Shape = shape;
+
     }
 
     public enum Shape {
-        SQUARE(1), CIRCLE(2), STAR(3), DIAMOND(4), CROSS(5), CLUB(6);
+        square(1), circle(2), star(3), diamond(4), cross(5), club(6);
 
         public int code;
 
@@ -21,7 +24,7 @@ public class Tile {
     }
 
     public enum Color {
-        BLUE(1), GREEN(2), RED(3), YELLOW(4), PURPLE(5), ORANGE(6);
+        blue(1), green(2), red(3), yellow(4), purple(5), orange(6);
 
         public int code;
 
@@ -41,9 +44,9 @@ public class Tile {
     @Override
     public String toString() {
         String toReturn = "";
-        toReturn += this.getColor().name() + " " + this.getShape().name();
+        toReturn += this.getColor().name() + "" + this.getShape().name();
         for (int i = toReturn.length(); i < 14; i++) {
-            toReturn += " ";
+            toReturn += "";
         }
         return toReturn;
     }

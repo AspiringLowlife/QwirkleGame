@@ -8,17 +8,22 @@ import static com.example.qwirklegame.Tile.Shape;
 public class GameModel {
 
     //108 tiles in the game bag
-    public ArrayList<Tile> bag = new ArrayList<>();
+    private ArrayList<Tile> bag = new ArrayList<>();
     //2-4 players
-    public ArrayList<Player> players = new ArrayList<>();
-
+    private ArrayList<Player> players = new ArrayList<>();
+    //player num
+    public static int playerNo=0;
     public GameModel(int playerNo) {
+        //
+        GameModel.playerNo =playerNo;
         //generate all 108 tiles in random order in the pieces bag
         generatePieces();
+        //initial hand for each player
         createPlayerHand(playerNo);
         //generate board
     }
 
+    //fills bag with random pieces
     public void generatePieces() {
         //repeat this three times so each shape has three in the same color
         for (int i = 0; i < 3; i++) {
@@ -61,6 +66,22 @@ public class GameModel {
             Player player = new Player(hand);
             players.add(player);
         }
+    }
+
+    public ArrayList<Tile> getBag() {
+        return bag;
+    }
+
+    public void setBag(ArrayList<Tile> bag) {
+        this.bag = bag;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
     }
 }
    // public final String[] colors = {"Blue", "Green", "Red", "Yellow", "Purple", "Orange"};

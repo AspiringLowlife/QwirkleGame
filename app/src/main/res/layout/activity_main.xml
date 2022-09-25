@@ -6,28 +6,41 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <TableLayout
         android:id="@+id/dropTarget"
-        android:layout_width="398dp"
-        android:layout_height="499dp"
+        android:layout_width="399dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:background="@color/purple_200"
-        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/tileBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/teal_200" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/teal_200" />
+
+    </TableLayout>
 
     <LinearLayout
         android:id="@+id/tileBar"
         android:layout_width="313dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="116dp"
+        android:layout_marginBottom="84dp"
         android:background="@color/purple_200"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.163"
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
@@ -73,5 +86,26 @@
             android:layout_weight="1"
             app:srcCompat="@drawable/blueclub" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:onClick="confirmClicked"
+        android:text="Confirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tileBar" />
+
+    <LinearLayout
+        android:id="@+id/swapTarget"
+        android:layout_width="72dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/swap"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tileBar"></LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
