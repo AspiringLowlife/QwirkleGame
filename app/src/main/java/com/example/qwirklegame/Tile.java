@@ -1,11 +1,13 @@
 package com.example.qwirklegame;
 
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 public class Tile {
 
     public Shape Shape;
     public Color Color;
+    public ImageView imageView=null;
 
     public Tile(Color color, Shape shape) {
         this.Color = color;
@@ -39,6 +41,10 @@ public class Tile {
 
     public Color getColor() {
         return Color;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
     }
 
     @Override

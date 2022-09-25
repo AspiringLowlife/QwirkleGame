@@ -49,50 +49,49 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="TODO"
-            app:srcCompat="@drawable/bluestar" />
+             />
 
         <ImageView
             android:id="@+id/tileHand1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/bluesquare" />
+            />
 
         <ImageView
             android:id="@+id/tileHand2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/bluediamond" />
+            />
 
         <ImageView
             android:id="@+id/tileHand3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/bluecross" />
+             />
 
         <ImageView
             android:id="@+id/tileHand4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/bluecircle" />
+             />
 
         <ImageView
             android:id="@+id/tileHand5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/blueclub" />
+           />
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/confirmBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:onClick="confirmClicked"
         android:text="Confirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tileBar" />

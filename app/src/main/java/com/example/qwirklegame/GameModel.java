@@ -2,6 +2,7 @@ package com.example.qwirklegame;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import static com.example.qwirklegame.Tile.Color;
 import static com.example.qwirklegame.Tile.Shape;
 
@@ -11,11 +12,13 @@ public class GameModel {
     private ArrayList<Tile> bag = new ArrayList<>();
     //2-4 players
     private ArrayList<Player> players = new ArrayList<>();
-    //player num
-    public static int playerNo=0;
+    //player info
+    public static int playerTotal = 0;
+    public int curPlayer;
+
     public GameModel(int playerNo) {
         //
-        GameModel.playerNo =playerNo;
+        GameModel.playerTotal = playerNo;
         //generate all 108 tiles in random order in the pieces bag
         generatePieces();
         //initial hand for each player
@@ -32,7 +35,7 @@ public class GameModel {
 
                 //each color gets one shape
                 for (int c = 0; c < 6; c++) {
-                    Tile tile=new Tile(Color.values()[c],Shape.values()[s]);
+                    Tile tile = new Tile(Color.values()[c], Shape.values()[s]);
                     bag.add(tile);
                 }
             }
@@ -53,6 +56,7 @@ public class GameModel {
         }
     }
 
+    //initial hand
     public void createPlayerHand(int playerNo) {
         Random r = new Random();
         for (int i = 0; i < playerNo; i++) {
@@ -83,8 +87,14 @@ public class GameModel {
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
+
+    public int changeCurPlayer() {
+        if (curPlayer == 0) curPlayer++;
+        else if (curPlayer == 1) curPlayer--;
+        return curPlayer;
+    }
 }
-   // public final String[] colors = {"Blue", "Green", "Red", "Yellow", "Purple", "Orange"};
+// public final String[] colors = {"Blue", "Green", "Red", "Yellow", "Purple", "Orange"};
 //    public final String[] shapes = {"Square", "Circle", "Start", "Diamond", "Cross", "Club"};
 //    public void generatePiece() {
 //        //three sets of 36 tiles ctrl+alt+l

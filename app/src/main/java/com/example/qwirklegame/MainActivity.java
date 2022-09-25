@@ -10,57 +10,44 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public GameModel game;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GameModel game = new GameModel(2);
-
-        TableLayout target = findViewById(R.id.dropTarget);
-        //TO DO
+        game = new GameModel(2);
         LinearLayout tileBar = findViewById(R.id.tileBar);
-        //TO DO
-        LinearLayout swapTarget = findViewById(R.id.swapTarget);
+        setTilesAndListeners(tileBar);
+        Button confirmBtn = findViewById(R.id.confirmBtn);
 
-        //region tiles
-        ImageView tileHand0 = findViewById(R.id.tileHand0);
-        ImageView tileHand1 = findViewById(R.id.tileHand1);
-        ImageView tileHand2 = findViewById(R.id.tileHand2);
-        ImageView tileHand3 = findViewById(R.id.tileHand3);
-        ImageView tileHand4 = findViewById(R.id.tileHand4);
-        ImageView tileHand5 = findViewById(R.id.tileHand5);
-
-        //setting the image for tiles in hand initially results in the last players hand being the starting hand
-        ArrayList<Tile> hand = game.getPlayers().get(0).getHand();
-        for (int j = 0; j < hand.size(); j++) {
-            ImageView viewTile = (ImageView) tileBar.getChildAt(j);
-            String drawableName = hand.get(j).toString();
-            viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
-        }
-
-
-        //Tile listeners Drag and drop
-        tileHand0.setOnTouchListener(new MyTouchListener());
-        tileHand1.setOnTouchListener(new MyTouchListener());
-        tileHand3.setOnTouchListener(new MyTouchListener());
-        tileHand2.setOnTouchListener(new MyTouchListener());
-        tileHand4.setOnTouchListener(new MyTouchListener());
-        tileHand5.setOnTouchListener(new MyTouchListener());
-        //endregion
-
-        //Target Listeners dropping tiles into
-        target.setOnDragListener(new MyDragListener());
-        tileBar.setOnDragListener(new MyDragListener());
-        swapTarget.setOnDragListener(new MyDragListener());
+        //confirmBtn listener
+        //fill hand of player who swapped or played tiles
+        //set tileBar to show tiles of next player
+        confirmBtn.setOnClickListener(view -> {
+            int curPlayer = game.changeCurPlayer();
+            tileBar.removeAllViews();
+            ArrayList<Tile> hand = game.getPlayers().get(curPlayer).getHand();
+            for (int i = 0; i < hand.size(); i++) {
+                ImageView viewTile = new ImageView(this);
+                String drawableName = hand.get(i).toString();
+                viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
+                viewTile.setOnTouchListener(new MyTouchListener());
+                tileBar.addView(viewTile);
+                hand.get(i).setImageView(viewTile);
+            }
+        });
     }
 
     final class MyTouchListener implements View.OnTouchListener {
@@ -113,6 +100,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void confirmClicked(View view) {
+    //add drag and drop and sets initial tiles from initial player hand
+    private void setTilesAndListeners(LinearLayout tileBar) {
+        TableLayout target = findViewById(R.id.dropTarget);
+        //TO DO
+        LinearLayout swapTarget = findViewById(R.id.swapTarget);
+
+        //setting the image for tiles in hand initially results in the last players hand being the starting hand
+        ArrayList<Tile> hand = game.getPlayers().get(0).getHand();
+        for (int j = 0; j < hand.size(); j++) {
+            //creating image view to fill into tileBar
+            ImageView viewTile = new ImageView(this);
+            String drawableName = hand.get(j).toString();
+            viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
+            viewTile.setOnTouchListener(new MyTouchListener());
+            tileBar.addView(viewTile);
+
+            //set reference for data tile
+            hand.get(j).setImageView(viewTile);
+            //  ImageView viewTile = (ImageView) tileBar.getChildAt(j);
+        }
+
+        //Target Listeners dropping tiles into
+        target.setOnDragListener(new MyDragListener());
+        tileBar.setOnDragListener(new MyDragListener());
+        swapTarget.setOnDragListener(new MyDragListener());
     }
 }
