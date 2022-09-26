@@ -22,6 +22,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public GameModel game;
+    private LinearLayout tileBar, swapTarget;
+    private TableLayout board;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -29,9 +31,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         game = new GameModel(2);
-        LinearLayout tileBar = findViewById(R.id.tileBar);
-        LinearLayout swapTarget = findViewById(R.id.swapTarget);
-        setTilesAndListeners(tileBar, swapTarget);
+        tileBar = findViewById(R.id.tileBar);
+        swapTarget = findViewById(R.id.swapTarget);
+        board = findViewById(R.id.dropTarget);
+        setTilesAndListeners(tileBar, swapTarget, board);
         Button confirmBtn = findViewById(R.id.confirmBtn);
 
         //confirmBtn listener
@@ -54,8 +57,10 @@ public class MainActivity extends AppCompatActivity {
                 game.swapPieces(swappingPieces);
                 swapTarget.removeAllViews();
             }
-            //check for buttons placed on board
-
+            //check for tiles placed on board
+            if(isHandOnBoard()){
+                System.out.println("Tiles on board");
+            }
             //swap player
             int curPlayer = game.changeCurPlayer();
             tileBar.removeAllViews();
@@ -87,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
     final class MyDragListener implements View.OnDragListener {
 
-//        Drawable enterShape = getDrawable(R.drawable.bluecircle);
-//        Drawable normalShape = getDrawable(R.drawable.bluecircle);
-
         @Override
         public boolean onDrag(View v, DragEvent event) {
             int action = event.getAction();
@@ -105,12 +107,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DragEvent.ACTION_DROP:
                     // Dropped, reassign View to ViewGroup
-                    View view = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) view.getParent();
-                    owner.removeView(view);
-                    LinearLayout container = (LinearLayout) v;
-                    container.addView(view);
-                    view.setVisibility(View.VISIBLE);
+                    int diff = 6 - swapTarget.getChildCount();
+                    if (v.equals(board) && swapTarget.getChildCount() == 0 || v.equals(swapTarget) && tileBar.getChildCount() == diff) {
+                        View view = (View) event.getLocalState();
+                        ViewGroup owner = (ViewGroup) view.getParent();
+                        owner.removeView(view);
+                        LinearLayout container = (LinearLayout) v;
+                        container.addView(view);
+                        view.setVisibility(View.VISIBLE);
+                    }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                 default:
@@ -121,8 +126,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //add drag and drop and sets initial tiles from initial player hand
-    private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget) {
-        TableLayout target = findViewById(R.id.dropTarget);
+    private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget, TableLayout target) {
 
         //setting the image for tiles in hand initially results in the last players hand being the starting hand
         ArrayList<Tile> hand = game.getPlayers().get(0).getHand();
@@ -143,5 +147,19 @@ public class MainActivity extends AppCompatActivity {
         target.setOnDragListener(new MyDragListener());
         tileBar.setOnDragListener(new MyDragListener());
         swapTarget.setOnDragListener(new MyDragListener());
+    }
+
+    private boolean isHandOnBoard(){
+        for (int i = 0; i < board.getChildCount(); i++) {
+            //board has current player's tiles from hand on board
+            ImageView tileView=(ImageView) board.getChildAt(i);
+            ArrayList<Tile> hand = game.getPlayers().get(game.curPlayerNo).getHand();
+            for (Tile tile : hand) {
+                if (tile.imageView.equals(tileView)) {
+                   return true;
+                }
+            }
+        }
+        return false;
     }
 }
