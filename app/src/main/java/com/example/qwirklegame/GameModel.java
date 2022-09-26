@@ -14,15 +14,16 @@ public class GameModel {
     private ArrayList<Player> players = new ArrayList<>();
     //player info
     public static int playerTotal = 0;
-    public int curPlayer;
+    public int curPlayerNo = 0;
+    public Player curPlayer;
 
     public GameModel(int playerNo) {
-        //
         GameModel.playerTotal = playerNo;
         //generate all 108 tiles in random order in the pieces bag
         generatePieces();
         //initial hand for each player
         createPlayerHand(playerNo);
+        curPlayer = players.get(0);
         //generate board
     }
 
@@ -40,10 +41,10 @@ public class GameModel {
                 }
             }
         }
-        Shuffle();
+        shuffle();
     }
 
-    public void Shuffle() {
+    public void shuffle() {
         // Very basic shuffle
         Random r = new Random();
         for (int j = 0; j < 500; j++) {
@@ -72,6 +73,31 @@ public class GameModel {
         }
     }
 
+    public int changeCurPlayer() {
+        if (curPlayerNo == 0) {
+            curPlayerNo++;
+            curPlayer = players.get(curPlayerNo);
+        } else if (curPlayerNo == 1) {
+            curPlayerNo--;
+            curPlayer = players.get(curPlayerNo);
+        }
+        return curPlayerNo;
+    }
+
+    public void swapPieces(ArrayList<Tile> tempList) {
+        if(tempList.size()>bag.size())return;
+        ArrayList<Tile> playerHand = players.get(curPlayerNo).getHand();
+        for (Tile tile : tempList) {
+            playerHand.remove(tile);
+            bag.add(tile);
+        }
+        shuffle();
+        for (Tile tile : tempList){
+            Tile newTile=bag.remove(bag.size()-1);
+            playerHand.add(newTile);
+        }
+    }
+
     public ArrayList<Tile> getBag() {
         return bag;
     }
@@ -88,11 +114,7 @@ public class GameModel {
         this.players = players;
     }
 
-    public int changeCurPlayer() {
-        if (curPlayer == 0) curPlayer++;
-        else if (curPlayer == 1) curPlayer--;
-        return curPlayer;
-    }
+
 }
 // public final String[] colors = {"Blue", "Green", "Red", "Yellow", "Purple", "Orange"};
 //    public final String[] shapes = {"Square", "Circle", "Start", "Diamond", "Cross", "Club"};
