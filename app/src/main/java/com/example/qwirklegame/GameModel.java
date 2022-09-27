@@ -85,16 +85,22 @@ public class GameModel {
     }
 
     public void swapPieces(ArrayList<Tile> tempList) {
-        if(tempList.size()>bag.size())return;
+        if (tempList.size() > bag.size()) return;
         ArrayList<Tile> playerHand = players.get(curPlayerNo).getHand();
         for (Tile tile : tempList) {
             playerHand.remove(tile);
             bag.add(tile);
         }
         shuffle();
-        for (Tile tile : tempList){
-            Tile newTile=bag.remove(bag.size()-1);
+        for (Tile tile : tempList) {
+            Tile newTile = bag.remove(bag.size() - 1);
             playerHand.add(newTile);
+        }
+    }
+
+    public void fillHand() {
+        while (curPlayer.getHand().size() < 6) {
+            curPlayer.getHand().add(bag.remove(bag.size() - 1));
         }
     }
 
