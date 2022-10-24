@@ -9,13 +9,13 @@ import static com.example.qwirklegame.Tile.Shape;
 public class GameModel {
 
     //108 tiles in the game bag
-    private ArrayList<Tile> bag = new ArrayList<>();
+    private static ArrayList<Tile> bag = new ArrayList<>();
     //2-4 players
-    private ArrayList<Player> players = new ArrayList<>();
+    private static ArrayList<Player> players = new ArrayList<>();
     //player info
     public static int playerTotal = 0;
-    public int curPlayerNo = 0;
-    public Player curPlayer;
+    public static int curPlayerNo = 0;
+    public static Player curPlayer;
 
     public GameModel(int playerNo) {
         GameModel.playerTotal = playerNo;
@@ -112,7 +112,7 @@ public class GameModel {
         this.bag = bag;
     }
 
-    public ArrayList<Player> getPlayers() {
+    public static ArrayList<Player> getPlayers() {
         return players;
     }
 

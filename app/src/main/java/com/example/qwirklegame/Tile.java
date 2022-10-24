@@ -7,12 +7,12 @@ public class Tile {
 
     public Shape Shape;
     public Color Color;
-    public ImageView imageView=null;
+//    public ImageView imageView = null;
+    public State state;
 
     public Tile(Color color, Shape shape) {
         this.Color = color;
         this.Shape = shape;
-
     }
 
     public enum Shape {
@@ -35,6 +35,16 @@ public class Tile {
         }
     }
 
+    public enum State {
+        swapping(1), onBoard(2), inBag(3), inHand(4);
+
+        public int code;
+
+        State(int i) {
+            this.code = i;
+        }
+    }
+
     public Shape getShape() {
         return Shape;
     }
@@ -43,9 +53,13 @@ public class Tile {
         return Color;
     }
 
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
+    public void setState(State state) {
+        this.state = state;
     }
+
+//    public void setImageView(ImageView imageView) {
+//        this.imageView = imageView;
+//    }
 
     @Override
     public String toString() {
