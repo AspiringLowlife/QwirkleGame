@@ -11,10 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QwirkleGame">
         <activity
-            android:name=".ConnectActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ConnectActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
