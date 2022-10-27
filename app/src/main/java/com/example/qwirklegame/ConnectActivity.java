@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ConnectActivity extends AppCompatActivity {
 
     //TODO remove static declaration
-    public static String connectionString = "10.107.12.15";
+    public static String connectionString = "10.0.0.11";
     public static Player player;
 
     @Override
@@ -37,9 +37,9 @@ public class ConnectActivity extends AppCompatActivity {
                 int c = 0;//hacky way to add some sequencing into this
             }
             player = androidClient.getPlayer();
-            if (player != null) {
+//            if (player != null) {
                 this.startActivity(intent);
-            }
+           // }
         });
     }
 }

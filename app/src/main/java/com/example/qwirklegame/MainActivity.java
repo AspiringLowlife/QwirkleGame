@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import com.codewithbill.GameModel;
-import com.codewithbill.MoveRequest;
+
 
 import com.codewithbill.Player;
 import com.codewithbill.Tile;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public GameModel game;
+    //    public GameModel game;
     private LinearLayout handView, swapTarget;
     private TableLayout board;
     private List<ImageView> handViewCopy = new ArrayList<>();
@@ -36,17 +36,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        game = new GameModel(2);
+        // game = new GameModel(2);
         handView = findViewById(R.id.tileBar);
         swapTarget = findViewById(R.id.swapTarget);
         board = findViewById(R.id.dropTarget);
-        player=ConnectActivity.player;
+        player = ConnectActivity.player;
         setTilesAndListeners(handView, swapTarget, board);
     }
 
     public void confirmClicked(View view) {
-
-        ArrayList<Tile> hand = GameModel.curPlayer.getHand();
+        ArrayList<Tile> hand = player.getHand();
         //check for swap then exchange pieces
         if (swapTarget.getChildCount() > 0) {
             ArrayList<Tile> swappingPieces = new ArrayList<>();
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
             swapTarget.removeAllViews();
         }
         //check for tiles placed on board
@@ -81,35 +79,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            //TODO remove for server functionality
-            for (Tile tile : temp) {
-                hand.remove(tile);
-            }
-            //add new tiles to hand
-            game.fillHand();
         }
-        //swap player
-        //TODO move to server
-        game.changeCurPlayer();
         this.handView.removeAllViews();
-        List<ImageView> tempList = new ArrayList<>();
-        ArrayList<Tile> newHand = GameModel.curPlayer.getHand();
-        for (int i = 0; i < newHand.size(); i++) {
-            ImageView viewTile = new ImageView(this);
-            String drawableName = newHand.get(i).toString();
-            viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
-            //attaching resource id as tag
-            viewTile.setTag(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
-            viewTile.setOnTouchListener(new MyTouchListener());
-            this.handView.addView(viewTile);
-            tempList.add(viewTile);
-        }
-        handViewCopy = tempList;
-        //inform Server of move
-       // MoveRequest request = new MoveRequest(hand);
-        //new AndroidClient(request, ConnectActivity.connectionString).start();
-    }
+        this.board.removeAllViews();
 
+        //inform Server of move and swap cur player
+        AndroidClient androidClient = new AndroidClient(player, ConnectActivity.connectionString);
+        androidClient.start();
+        while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
+            int c = 0;//hacky way to add some sequencing into this
+        }
+        player = androidClient.getPlayer();
+        fillHandView();
+        fillBoard(androidClient.getBoard());
+    }
 //    public void confirmClicked(View view) {
 //
 //        ArrayList<Tile> hand = GameModel.curPlayer.getHand();
@@ -234,9 +217,17 @@ public class MainActivity extends AppCompatActivity {
 
     //add drag and drop and sets initial tiles from initial player hand
     private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget, TableLayout boardTarget) {
+        //setting the image for tiles in hand initially
+        fillHandView();
+        //Target Listeners dropping tiles into
+        boardTarget.setOnDragListener(new MyDragListener());
+        tileBar.setOnDragListener(new MyDragListener());
+        swapTarget.setOnDragListener(new MyDragListener());
+    }
 
-        //setting the image for tiles in hand initially results in the last players hand being the starting hand
-        ArrayList<Tile> hand = game.getPlayers().get(0).getHand();
+    private void fillHandView() {
+        ArrayList<Tile> hand = player.getHand();
+        ArrayList<ImageView> temp = new ArrayList<>();
         for (int j = 0; j < hand.size(); j++) {
             //creating image view to fill into tileBar
             ImageView viewTile = new ImageView(this);
@@ -245,17 +236,23 @@ public class MainActivity extends AppCompatActivity {
             //attaching resource id as tag
             viewTile.setTag(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
             viewTile.setOnTouchListener(new MyTouchListener());
-            tileBar.addView(viewTile);
-            handViewCopy.add(viewTile);
-            //set reference for data tile
-//            hand.get(j).setImageView(viewTile);
-            //  ImageView viewTile = (ImageView) tileBar.getChildAt(j);
+            handView.addView(viewTile);
+            temp.add(viewTile);
         }
+        handViewCopy = temp;
+    }
 
-        //Target Listeners dropping tiles into
-        boardTarget.setOnDragListener(new MyDragListener());
-        tileBar.setOnDragListener(new MyDragListener());
-        swapTarget.setOnDragListener(new MyDragListener());
+    private void fillBoard(ArrayList<Tile> board) {
+        for (int j = 0; j < board.size(); j++) {
+            //creating image view to fill into Board
+            ImageView viewTile = new ImageView(this);
+            String drawableName = board.get(j).toString();
+            viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
+            //attaching resource id as tag
+            viewTile.setTag(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
+            viewTile.setOnTouchListener(new MyTouchListener());
+            this.board.addView(viewTile);
+        }
     }
 
     private boolean isHandOnBoard() {
@@ -274,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isTileInHand(View viewTile) {
         String drawableName = this.getResources().getResourceEntryName((int) viewTile.getTag());
-        for (Tile tile : game.curPlayer.getHand()) {
+        for (Tile tile : player.getHand()) {
             if (tile.toString().equals(drawableName)) return true;
         }
         return false;
