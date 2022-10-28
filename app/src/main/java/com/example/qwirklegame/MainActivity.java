@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
         this.handView.removeAllViews();
         this.board.removeAllViews();
 

@@ -25,21 +25,20 @@ public class ConnectActivity extends AppCompatActivity {
         Button btnConnect = findViewById(R.id.btnConnect);
 
         btnConnect.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MenuActivity.class);
 //            String connectionString=textIP.getText().toString();
-//            intent.putExtra("connectionString",connectionString);
             // connectionString=textIP.getText().toString();
 
-            //get the new player info to pass to MainActivity
-            AndroidClient androidClient = new AndroidClient("NewPlayer", connectionString);
+            //Pass requested players for multiplayer passing just an int will create a new player
+            AndroidClient androidClient = new AndroidClient("CheckConnection", connectionString);
             androidClient.start();
             while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
                 int c = 0;//hacky way to add some sequencing into this
             }
-            player = androidClient.getPlayer();
-//            if (player != null) {
+            //go to menu
+            if (androidClient.getIsConnected()) {
                 this.startActivity(intent);
-           // }
+            }
         });
     }
 }

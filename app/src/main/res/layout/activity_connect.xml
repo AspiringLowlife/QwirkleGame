@@ -32,7 +32,7 @@
         android:layout_width="325dp"
         android:layout_height="74dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="152dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textIP" />
 
@@ -40,9 +40,10 @@
         android:id="@+id/btnConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="68dp"
         android:text="Connect"
         app:layout_constraintStart_toEndOf="@+id/textIP"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

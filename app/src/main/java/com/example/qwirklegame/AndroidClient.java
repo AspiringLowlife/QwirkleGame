@@ -13,10 +13,12 @@ import java.util.ArrayList;
 
 public class AndroidClient extends Thread {
 
-    private Object request;
-    private String connectionString;
+    private final Object request;
+    private final String connectionString;
     private Player player;
     private ArrayList<Tile> board;
+    private boolean isConnected;
+    private boolean areExistingGames;
 
     Socket client;
     ObjectInputStream input;
@@ -66,8 +68,9 @@ public class AndroidClient extends Thread {
 
     private void processConnection() throws IOException, ClassNotFoundException {
         System.out.println("Server message: " + input.readObject());
+        isConnected=true;
 
-        //request is either a newPlayer String or a move Player
+        //request is either a
         output.writeObject(request);
         output.flush();
 
@@ -75,17 +78,21 @@ public class AndroidClient extends Thread {
         System.out.println();
 
         // Process any objects server passes
-        Object serverRequest = input.readObject();
+        Object serverResponse = input.readObject();
         //newPlayer assigned from server
-        if (serverRequest.getClass().equals(Player.class)) {
-            Player player = (Player) serverRequest;
+        if (serverResponse.getClass().equals(Player.class)) {
+            Player player = (Player) serverResponse;
             setPlayer(player);
         }
         //Receiving board state and updated hand
-        else if(serverRequest.getClass().equals(MoveResponse.class)){
-            MoveResponse moveResponse= (MoveResponse) serverRequest;
+        else if(serverResponse.getClass().equals(MoveResponse.class)){
+            MoveResponse moveResponse= (MoveResponse) serverResponse;
             setBoard(moveResponse.board);
             setPlayer(moveResponse.player);
+        }
+        //CHecking if any existing games
+        else if(serverResponse.getClass().equals(String.class)){
+            areExistingGames=true;
         }
     }
 
@@ -95,6 +102,14 @@ public class AndroidClient extends Thread {
 
     public void setBoard(ArrayList<Tile> board) {
         this.board = board;
+    }
+
+    public boolean getIsConnected(){
+        return isConnected;
+    }
+
+    public boolean getAreExistingGames(){
+        return areExistingGames;
     }
 
     public void setPlayer(Player player) {
