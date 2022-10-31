@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         handView = findViewById(R.id.tileBar);
         swapTarget = findViewById(R.id.swapTarget);
         board = findViewById(R.id.dropTarget);
-        player = ConnectActivity.player;
+        Bundle extras=this.getIntent().getExtras();
+        player = (Player) extras.get("player");
         setTilesAndListeners(handView, swapTarget, board);
     }
 

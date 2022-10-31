@@ -15,7 +15,6 @@ public class ConnectActivity extends AppCompatActivity {
 
     //TODO remove static declaration
     public static String connectionString = "10.0.0.11";
-    public static Player player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +31,7 @@ public class ConnectActivity extends AppCompatActivity {
             //Pass requested players for multiplayer passing just an int will create a new player
             AndroidClient androidClient = new AndroidClient("CheckConnection", connectionString);
             androidClient.start();
+
             while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
                 int c = 0;//hacky way to add some sequencing into this
             }

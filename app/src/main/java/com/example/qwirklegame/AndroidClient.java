@@ -70,7 +70,7 @@ public class AndroidClient extends Thread {
         System.out.println("Server message: " + input.readObject());
         isConnected=true;
 
-        //request is either a
+        //send request to server
         output.writeObject(request);
         output.flush();
 
@@ -84,13 +84,13 @@ public class AndroidClient extends Thread {
             Player player = (Player) serverResponse;
             setPlayer(player);
         }
-        //Receiving board state and updated hand
+        //Receiving board state and updated hand for mainActivity
         else if(serverResponse.getClass().equals(MoveResponse.class)){
             MoveResponse moveResponse= (MoveResponse) serverResponse;
             setBoard(moveResponse.board);
             setPlayer(moveResponse.player);
         }
-        //CHecking if any existing games
+        //Checking if any existing games for menuActivity
         else if(serverResponse.getClass().equals(String.class)){
             areExistingGames=true;
         }
