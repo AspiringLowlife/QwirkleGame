@@ -4,97 +4,125 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MenuActivity"
-    android:background="@color/blue_200">
+    android:background="@color/blue_200"
+    tools:context=".MenuActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
-        android:text="Create New Game"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Choose No. of Players"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <Button
-        android:id="@+id/btnNewGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="260dp"
-        android:onClick="newGameClicked"
-        android:text="New Game"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RadioGroup
-        android:layout_width="85dp"
-        android:layout_height="143dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
-
-        <RadioButton
-            android:id="@+id/radioTwo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2 Player" />
-
-        <RadioButton
-            android:id="@+id/radioThree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 Player" />
-
-        <RadioButton
-            android:id="@+id/radioFour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4 Player" />
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="38dp"
-        android:text="Existing Games"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNewGame" />
-
-    <Button
-        android:id="@+id/btnJoinExisting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="108dp"
+    <LinearLayout
+        android:id="@+id/newGameBox"
+        android:layout_width="329dp"
+        android:layout_height="296dp"
         android:layout_marginTop="16dp"
-        android:onClick="existingGameClicked"
-        android:text="Join Existing Game"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCheck" />
+        android:layout_marginEnd="48dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="15dp"
-        android:onClick="btnCheckClicked"
-        android:text="Check For game"
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GAME MENU"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="-54dp"
+            tools:layout_editor_absoluteY="240dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create New Game"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="-64dp"
+            tools:layout_editor_absoluteY="242dp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose No. of Players"
+            android:visibility="invisible"
+            tools:layout_editor_absoluteX="-68dp"
+            tools:layout_editor_absoluteY="249dp" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="143dp"
+            tools:layout_editor_absoluteX="-38dp"
+            tools:layout_editor_absoluteY="267dp">
+
+            <RadioButton
+                android:id="@+id/radioTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/red_500"
+                android:text="2 Player"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioThree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/red_500"
+                android:text="3 Player"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioFour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/red_500"
+                android:text="4 Player"
+                android:textSize="16sp" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnNewGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="newGameClicked"
+            android:text="New Game" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/existingGameBox"
+        android:layout_width="339dp"
+        android:layout_height="148dp"
+        android:layout_marginStart="28dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/newGameBox">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Existing Games"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="-44dp"
+            tools:layout_editor_absoluteY="539dp" />
+
+        <Button
+            android:id="@+id/btnJoinExisting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="existingGameClicked"
+            android:text="Join Existing Game"
+            tools:layout_editor_absoluteX="-83dp"
+            tools:layout_editor_absoluteY="552dp" />
+
+        <Button
+            android:id="@+id/btnCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnCheckClicked"
+            android:text="Check For game"
+            tools:layout_editor_absoluteX="-64dp"
+            tools:layout_editor_absoluteY="570dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class WaitingRoom extends AppCompatActivity {
 
     private Bundle extras;
+    boolean isCancelled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +32,18 @@ public class WaitingRoom extends AppCompatActivity {
         extras = this.getIntent().getExtras();
         PlayerRequest playerRequest = new PlayerRequest("CheckIsGameReady", (Player) extras.get("player"));
         TimerTask timerTask = new TimerTask(playerRequest, ConnectActivity.connectionString, this);
-
         timerTask.execute();
         timerTask.informPlayer();
     }
 
     public void btnClicked(View view) {
-
+        isCancelled = true;
+        PlayerRequest playerRequest=new PlayerRequest("CancelGame",(Player) extras.get("player"));
+        AndroidClient androidClient=new AndroidClient(playerRequest,ConnectActivity.connectionString);
+        androidClient.start();
+        Intent intent = new Intent(this, MenuActivity.class);
+        intent.putExtra("player", (Player) extras.get("player"));
+        this.startActivity(intent);
     }
 
     public class TimerTask extends AsyncTask<Object, Object, Object> {
@@ -62,6 +68,10 @@ public class WaitingRoom extends AppCompatActivity {
         protected Object doInBackground(Object... request) {
             while (!conditionMet) {
                 runClient();
+                if (isCancelled) cancel(true);
+                if (isCancelled()) {
+                    break;
+                }
             }
             return board;
         }
@@ -75,6 +85,11 @@ public class WaitingRoom extends AppCompatActivity {
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra("player", (Player) extras.get("player"));
             context.startActivity(intent);
+        }
+
+        @Override
+        protected void onCancelled(Object board) {
+
         }
 
         public ArrayList<Tile> getBoard() {
@@ -141,7 +156,7 @@ public class WaitingRoom extends AppCompatActivity {
         //methods to alter views in UI
         public void informPlayer() {
             TextView txtBox = findViewById(R.id.descriptiveTxt);
-            txtBox.setText("Waiting For More Players...");
+            txtBox.setText("Waiting For More Players...\n Can cancel search");
         }
     }
 }

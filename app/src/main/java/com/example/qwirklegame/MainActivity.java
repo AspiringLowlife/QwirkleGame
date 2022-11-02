@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
             this.connectionString = connectionString;
             this.context = context;
 
-            informPlayer("Opponent's Turn");
+            informPlayer("OPPONENT'S TURN");
             btnConfirm.setVisibility(View.INVISIBLE);
             handView.setVisibility(View.INVISIBLE);
         }
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(board);
             boardView.removeAllViews();
             //unlock controls and update textBox
-            informPlayer("Your Turn");
+            informPlayer("YOUR TURN");
             fillBoard(this.board);
             handView.setVisibility(View.VISIBLE);
             btnConfirm.setVisibility(View.VISIBLE);
