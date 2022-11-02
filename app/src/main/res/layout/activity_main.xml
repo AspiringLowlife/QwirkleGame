@@ -7,21 +7,37 @@
     android:background="@color/blue_200"
     tools:context=".MainActivity">
 
-    <TableLayout
+<!--    <TableLayout-->
+<!--        android:id="@+id/dropTarget"-->
+<!--        android:layout_width="383dp"-->
+<!--        android:layout_height="413dp"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:background="@color/purple_200"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/tileBar"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.461"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.896">-->
+
+<!--    </TableLayout>-->
+
+    <LinearLayout
         android:id="@+id/dropTarget"
-        android:layout_width="399dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="348dp"
+        android:layout_height="408dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="57dp"
         android:background="@color/purple_200"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/tileBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-    </TableLayout>
+        app:layout_constraintTop_toBottomOf="@+id/txtCurPlayer"
+        app:layout_constraintVertical_bias="0.876"></LinearLayout>
 
     <LinearLayout
         android:id="@+id/tileBar"
@@ -57,5 +73,15 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tileBar"></LinearLayout>
+
+    <TextView
+        android:id="@+id/txtCurPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="16dp"
+        android:text="currentPlayer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

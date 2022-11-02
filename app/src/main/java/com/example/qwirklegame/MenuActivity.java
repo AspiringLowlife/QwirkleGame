@@ -6,13 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codewithbill.Main;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private TextView playerCountView;
+    private RadioButton radioTwo,radioThree,radioFour;
+    Button btnExisting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,15 +27,26 @@ public class MenuActivity extends AppCompatActivity {
         while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
             int c = 0;//hacky way to add some sequencing into this
         }
-        playerCountView=findViewById(R.id.txtPlayerNo);
-        Button btnExisting=findViewById(R.id.btnJoinExisting);
+        Button btnCheck=findViewById(R.id.btnCheck);
+        btnExisting=findViewById(R.id.btnJoinExisting);
+        radioTwo=findViewById(R.id.radioTwo);
+        radioThree=findViewById(R.id.radioThree);
+        radioFour=findViewById(R.id.radioFour);
 
         btnExisting.setVisibility(View.INVISIBLE);
         if(androidClient.getAreExistingGames())btnExisting.setVisibility(View.VISIBLE);
+        if(btnExisting.getVisibility()==View.VISIBLE)btnCheck.setVisibility(View.INVISIBLE);
     }
 
     public void newGameClicked(View view) {
-        Integer playerRequest=Integer.parseInt(playerCountView.getText().toString());
+        Integer playerRequest=0;
+        if(radioTwo.isChecked()){playerRequest=2;}
+        else if(radioThree.isChecked()){ playerRequest=3;}
+        else if(radioFour.isChecked()){playerRequest=4;}
+        if(playerRequest==0){
+            Toast.makeText(this, "Please choose how many players for your game", Toast.LENGTH_SHORT).show();
+            return;
+        }
         AndroidClient androidClient=new AndroidClient(playerRequest,ConnectActivity.connectionString);
         androidClient.start();
         while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
@@ -52,5 +67,14 @@ public class MenuActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WaitingRoom.class);
         intent.putExtra("player",androidClient.getPlayer());
         this.startActivity(intent);
+    }
+
+    public void btnCheckClicked(View view) {
+        AndroidClient androidClient=new AndroidClient("CheckExisting",ConnectActivity.connectionString);
+        androidClient.start();
+        while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
+            int c = 0;//hacky way to add some sequencing into this
+        }
+        if(androidClient.getAreExistingGames())btnExisting.setVisibility(View.VISIBLE);
     }
 }

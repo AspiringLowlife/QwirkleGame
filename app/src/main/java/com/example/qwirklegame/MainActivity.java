@@ -4,45 +4,60 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.codewithbill.GameModel;
-
-
+import com.codewithbill.MoveResponse;
 import com.codewithbill.Player;
+import com.codewithbill.PlayerRequest;
 import com.codewithbill.Tile;
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    //    public GameModel game;
+    //        public GameModel game;
     private LinearLayout handView, swapTarget;
-    private TableLayout board;
+    private LinearLayout boardView;
     private List<ImageView> handViewCopy = new ArrayList<>();
     private Player player;
+    private ArrayList<Tile> myBoard=new ArrayList<>();
+    Button btnConfirm;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // game = new GameModel(2);
+//         game = new GameModel(1);
         handView = findViewById(R.id.tileBar);
         swapTarget = findViewById(R.id.swapTarget);
-        board = findViewById(R.id.dropTarget);
-        Bundle extras=this.getIntent().getExtras();
+        boardView = findViewById(R.id.dropTarget);
+        Bundle extras = this.getIntent().getExtras();
         player = (Player) extras.get("player");
-        setTilesAndListeners(handView, swapTarget, board);
+        btnConfirm = findViewById(R.id.confirmBtn);
+        setTilesAndListeners(handView, swapTarget, boardView);
     }
 
     public void confirmClicked(View view) {
@@ -66,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
         //check for tiles placed on board
         else if (isHandOnBoard()) {
             ArrayList<Tile> temp = new ArrayList<>();
-            for (int i = 0; i < board.getChildCount(); i++) {
+            for (int i = 0; i < boardView.getChildCount(); i++) {
                 for (int j = 0; j < handViewCopy.size(); j++) {
-                    if (board.getChildAt(i).equals(handViewCopy.get(j))) {
-                        int resId = (int) board.getChildAt(i).getTag();
+                    if (boardView.getChildAt(i).equals(handViewCopy.get(j))) {
+                        int resId = (int) boardView.getChildAt(i).getTag();
                         String drawableName = this.getResources().getResourceEntryName(resId);
                         for (Tile tile : hand) {
                             if (tile.toString().equals(drawableName)) {
@@ -81,9 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
+        //checks if any move was made prior to pressing confirm btn
+        if (checkForNoAction(hand)) {
+            Toast.makeText(this, "Please swap or place tile on board before confirming", Toast.LENGTH_LONG).show();
+            return;
+        }
         this.handView.removeAllViews();
-        this.board.removeAllViews();
+//        this.boardView.removeAllViews();
 
         //inform Server of move and swap cur player
         AndroidClient androidClient = new AndroidClient(player, ConnectActivity.connectionString);
@@ -92,8 +111,11 @@ public class MainActivity extends AppCompatActivity {
             int c = 0;//hacky way to add some sequencing into this
         }
         player = androidClient.getPlayer();
+        myBoard=androidClient.getBoard();
         fillHandView();
-        fillBoard(androidClient.getBoard());
+        PlayerRequest playerRequest = new PlayerRequest("CheckTurn", player);
+        TimerTask timerTask = new TimerTask(playerRequest, ConnectActivity.connectionString, this);
+        timerTask.execute();
     }
 //    public void confirmClicked(View view) {
 //
@@ -200,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DROP:
                     // Dropped, reassign View to ViewGroup
                     int diff = 6 - swapTarget.getChildCount();
-                    if (v.equals(board) && swapTarget.getChildCount() == 0 || v.equals(swapTarget) && handView.getChildCount() == diff || v.equals(handView)) {
+                    if (v.equals(boardView) && swapTarget.getChildCount() == 0 || v.equals(swapTarget) && handView.getChildCount() == diff || v.equals(handView)) {
                         View view = (View) event.getLocalState();
                         ViewGroup owner = (ViewGroup) view.getParent();
                         owner.removeView(view);
@@ -218,9 +240,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //add drag and drop and sets initial tiles from initial player hand
-    private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget, TableLayout boardTarget) {
+    private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget, ViewGroup boardTarget) {
         //setting the image for tiles in hand initially
         fillHandView();
+        //check if current player initial
+        PlayerRequest playerRequest = new PlayerRequest("CheckTurn", player);
+        TimerTask timerTask = new TimerTask(playerRequest, ConnectActivity.connectionString, this);
+        timerTask.execute();
+
         //Target Listeners dropping tiles into
         boardTarget.setOnDragListener(new MyDragListener());
         tileBar.setOnDragListener(new MyDragListener());
@@ -245,24 +272,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fillBoard(ArrayList<Tile> board) {
+        //fill pieces player knows about
         for (int j = 0; j < board.size(); j++) {
             //creating image view to fill into Board
             ImageView viewTile = new ImageView(this);
             String drawableName = board.get(j).toString();
             viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
+
+            //highlight pieces added by opponent
+            if(j>myBoard.size()-1){
+                //ToDO
+                viewTile.setBackgroundResource(R.color.green_highlight);
+                viewTile.setPadding(5,5,5,5);
+            }
+
             //attaching resource id as tag
             viewTile.setTag(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
             viewTile.setOnTouchListener(new MyTouchListener());
-            this.board.addView(viewTile);
+            this.boardView.addView(viewTile);
         }
     }
 
     private boolean isHandOnBoard() {
         try {
-            for (int i = 0; i < board.getChildCount(); i++) {
+            for (int i = 0; i < boardView.getChildCount(); i++) {
                 //board has current player's tiles from hand on board
                 for (int j = 0; j < handViewCopy.size(); j++) {
-                    if (board.getChildAt(i).equals(handViewCopy.get(j))) return true;
+                    if (boardView.getChildAt(i).equals(handViewCopy.get(j))) return true;
                 }
             }
             return false;
@@ -277,5 +313,122 @@ public class MainActivity extends AppCompatActivity {
             if (tile.toString().equals(drawableName)) return true;
         }
         return false;
+    }
+
+    private boolean checkForNoAction(ArrayList<Tile> hand) {
+        for (Tile tile : hand) {
+            if (!tile.state.equals(Tile.State.inHand)) return false;
+        }
+        return true;
+    }
+
+    public class TimerTask extends AsyncTask<Object, Object, Object> {
+        private final Object request;
+        private final String connectionString;
+        private ArrayList<Tile> board;
+        private boolean conditionMet = false;
+        private final Context context;
+
+        Socket client;
+        ObjectInputStream input;
+        ObjectOutputStream output;
+
+        public TimerTask(Object request, String connectionString, Context context) {
+            super();
+            this.request = request;
+            this.connectionString = connectionString;
+            this.context = context;
+
+            informPlayer("Opponent's Turn");
+            btnConfirm.setVisibility(View.INVISIBLE);
+            handView.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected Object doInBackground(Object... request) {
+            while (!conditionMet) {
+                runClient();
+            }
+            return board;
+        }
+
+        @Override
+        protected void onProgressUpdate(Object... progress) {
+            // IMPORTANT: this method is synched with UI thread, so can access UI
+            super.onProgressUpdate(progress);
+
+            // Update txtBox
+        }
+
+        @Override
+        protected void onPostExecute(Object board) {
+            // IMPORTANT: this method is synched with UI thread, so can access UI
+            super.onPostExecute(board);
+            boardView.removeAllViews();
+            //unlock controls and update textBox
+            informPlayer("Your Turn");
+            fillBoard(this.board);
+            handView.setVisibility(View.VISIBLE);
+            btnConfirm.setVisibility(View.VISIBLE);
+        }
+
+        public void runClient() {
+            try {
+                System.out.println("Client started");
+
+                // Step 1: Create a Socket to make connection.
+//            client = new Socket(InetAddress.getLocalHost(), 500);
+                client = new Socket(connectionString, 500);
+                System.out.println("Connected to: "
+                        + client.getInetAddress().getHostName());
+
+                // Step 2: Get the input and output streams.
+                output = new ObjectOutputStream(client.getOutputStream());
+                output.flush();
+
+                input = new ObjectInputStream(client.getInputStream());
+                System.out.println("Got I/O Streams");
+
+                // Step 3: Process connection.
+                processConnection();
+
+                // Step 4: Close connection.
+                System.out.println("Transmission complete. "
+                        + "Closing connection.");
+                client.close();
+
+                //every three seconds check
+                Thread.sleep(2000);
+            } catch (IOException | ClassNotFoundException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void processConnection() throws IOException, ClassNotFoundException, InterruptedException {
+            System.out.println("Server message: " + input.readObject());
+
+            //send request to server
+            output.writeObject(request);
+            output.flush();
+
+            System.out.printf("Sent message \"%s\"", "client request");
+            System.out.println();
+
+            // Process any objects server passes
+            Object serverResponse = input.readObject();
+            //Response for isGameReady
+            if (serverResponse.getClass().equals(Boolean.class)) {
+                conditionMet = (Boolean) serverResponse;
+            } else if (serverResponse.getClass().equals(MoveResponse.class)) {
+                board = ((MoveResponse) serverResponse).board;
+                conditionMet = true;
+            }
+        }
+
+        //methods to alter views in UI
+        public void informPlayer(String msg) {
+            TextView txtBox = findViewById(R.id.txtCurPlayer);
+            txtBox.setText(msg);
+        }
     }
 }

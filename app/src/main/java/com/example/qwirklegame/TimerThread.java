@@ -1,8 +1,14 @@
 package com.example.qwirklegame;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.widget.TextView;
+
 import com.codewithbill.MoveResponse;
 import com.codewithbill.Player;
 import com.codewithbill.Tile;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,22 +21,24 @@ public class TimerThread extends Thread {
     private final String connectionString;
     private Player player;
     private ArrayList<Tile> board;
-    private boolean isGameFull=false;
+    private boolean conditionMet = false;
+    private Context context;
 
     Socket client;
     ObjectInputStream input;
     ObjectOutputStream output;
-    //DataInputStream input;
 
-    public TimerThread(Object request, String connectionString) {
+    public TimerThread(Object request, String connectionString, Context context) {
         this.request = request;
         this.connectionString = connectionString;
+        this.context=context;
     }
 
     @Override
     public void run() {
-        while (!isGameFull) {
+        while (!conditionMet) {
             runClient();
+
         }
     }
 
@@ -58,6 +66,8 @@ public class TimerThread extends Thread {
             System.out.println("Transmission complete. "
                     + "Closing connection.");
             client.close();
+
+            Thread.sleep(3000);
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -66,22 +76,30 @@ public class TimerThread extends Thread {
     private void processConnection() throws IOException, ClassNotFoundException, InterruptedException {
         System.out.println("Server message: " + input.readObject());
 
+        //send request to server
+        output.writeObject(request);
+        output.flush();
 
-            //send request to server
-            output.writeObject(request);
-            output.flush();
+        System.out.printf("Sent message \"%s\"", "client request");
+        System.out.println();
 
-            System.out.printf("Sent message \"%s\"", "client request");
-            System.out.println();
+        // Process any objects server passes
+        Object serverResponse = input.readObject();
+        //Response for isGameReady
+        if (serverResponse.getClass().equals(Boolean.class)) {
+            conditionMet = (Boolean) serverResponse;
+        } else if (serverResponse.getClass().equals(MoveResponse.class)) {
+            board = ((MoveResponse) serverResponse).board;
+            conditionMet = true;
+        }
+    }
 
-            // Process any objects server passes
-            Object serverResponse = input.readObject();
-            //Response for isGameReady
-            if (serverResponse.getClass().equals(Boolean.class)) {
-                isGameFull = (Boolean) serverResponse;
-            }
-            //every three seconds check
-//            Thread.sleep(3000);
+    public ArrayList<Tile> getBoard() {
+        return board;
+    }
 
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }
+
