@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Tile> myBoard = new ArrayList<>();
     private boolean isCancelled;
     Button btnConfirm;
+    ImageView btnCancel;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle extras = this.getIntent().getExtras();
         player = (Player) extras.get("player");
         btnConfirm = findViewById(R.id.confirmBtn);
+        btnCancel=findViewById(R.id.cancelBtn);
         setTilesAndListeners(handView, swapTarget, boardView);
     }
 
@@ -293,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
             this.context = context;
 
             informPlayer("OPPONENT'S TURN");
+            btnCancel.setVisibility(View.INVISIBLE);
             btnConfirm.setVisibility(View.INVISIBLE);
             handView.setVisibility(View.INVISIBLE);
         }
@@ -331,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
             //unlock controls and update textBox
             informPlayer("YOUR TURN");
             fillBoard(this.board);
+            btnCancel.setVisibility(View.VISIBLE);
             handView.setVisibility(View.VISIBLE);
             btnConfirm.setVisibility(View.VISIBLE);
         }

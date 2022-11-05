@@ -64,9 +64,19 @@ public class MenuActivity extends AppCompatActivity {
         while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
             int c = 0;//hacky way to add some sequencing into this
         }
-        Intent intent = new Intent(this, WaitingRoom.class);
-        intent.putExtra("player",androidClient.getPlayer());
-        this.startActivity(intent);
+        if(androidClient.getAreExistingGames()){
+            Intent intent = new Intent(this, WaitingRoom.class);
+            intent.putExtra("player",androidClient.getPlayer());
+            this.startActivity(intent);
+        }
+        //Refresh window
+        else{
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
+            Toast.makeText(this, "That Game cancelled", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void btnCheckClicked(View view) {

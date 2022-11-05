@@ -24,7 +24,7 @@
     <!--    </TableLayout>-->
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/cancelBtn"
         android:layout_width="70dp"
         android:layout_height="49dp"
         android:layout_marginStart="2dp"

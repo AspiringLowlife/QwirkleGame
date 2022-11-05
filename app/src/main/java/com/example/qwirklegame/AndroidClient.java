@@ -84,6 +84,7 @@ public class AndroidClient extends Thread {
         if (serverResponse.getClass().equals(Player.class)) {
             Player player = (Player) serverResponse;
             setPlayer(player);
+            areExistingGames=true;
         }
         //Receiving board state and updated hand for mainActivity
         else if(serverResponse.getClass().equals(MoveResponse.class)){
@@ -91,9 +92,12 @@ public class AndroidClient extends Thread {
             setBoard(moveResponse.board);
             setPlayer(moveResponse.player);
         }
-        //Checking if any existing games for menuActivity
+        //Checking if any existing games for menuActivity and join exisitng check
         else if(serverResponse.getClass().equals(String.class)){
-            areExistingGames=true;
+            if(serverResponse.equals("Yep")){
+                areExistingGames=true;
+            }else areExistingGames=false;
+
         }else if(serverResponse.getClass().equals(ArrayList.class)){
             players=(ArrayList<Player>) serverResponse;
         }
