@@ -38,11 +38,10 @@ public class WaitingRoom extends AppCompatActivity {
 
     public void btnClicked(View view) {
         isCancelled = true;
-        PlayerRequest playerRequest=new PlayerRequest("CancelGame",(Player) extras.get("player"));
+        PlayerRequest playerRequest=new PlayerRequest("LeaveGame",(Player) extras.get("player"));
         AndroidClient androidClient=new AndroidClient(playerRequest,ConnectActivity.connectionString);
         androidClient.start();
         Intent intent = new Intent(this, MenuActivity.class);
-        intent.putExtra("player", (Player) extras.get("player"));
         this.startActivity(intent);
     }
 
@@ -78,7 +77,6 @@ public class WaitingRoom extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object board) {
-            // IMPORTANT: this method is synched with UI thread, so can access UI
             super.onPostExecute(board);
 
             //start intent

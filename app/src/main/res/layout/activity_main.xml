@@ -7,47 +7,57 @@
     android:background="@color/blue_200"
     tools:context=".MainActivity">
 
-<!--    <TableLayout-->
-<!--        android:id="@+id/dropTarget"-->
-<!--        android:layout_width="383dp"-->
-<!--        android:layout_height="413dp"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        android:background="@color/purple_200"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/tileBar"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.461"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.896">-->
+    <!--    <TableLayout-->
+    <!--        android:id="@+id/dropTarget"-->
+    <!--        android:layout_width="383dp"-->
+    <!--        android:layout_height="413dp"-->
+    <!--        android:layout_marginTop="32dp"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:background="@color/purple_200"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/tileBar"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.461"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintVertical_bias="0.896">-->
 
-<!--    </TableLayout>-->
+    <!--    </TableLayout>-->
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="70dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="16dp"
+        android:onClick="btnCancelClicked"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cancel" />
 
     <LinearLayout
         android:id="@+id/dropTarget"
-        android:layout_width="348dp"
-        android:layout_height="408dp"
+        android:layout_width="340dp"
+        android:layout_height="384dp"
         android:layout_marginStart="31dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="57dp"
         android:background="@color/purple_200"
+        android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/tileBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCurPlayer"
-        app:layout_constraintVertical_bias="0.876"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/txtCurPlayer"></LinearLayout>
 
     <LinearLayout
         android:id="@+id/tileBar"
-        android:layout_width="313dp"
-        android:layout_height="50dp"
+        android:layout_width="243dp"
+        android:layout_height="42dp"
         android:layout_marginBottom="84dp"
         android:background="@color/purple_200"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent">
 
 
@@ -57,10 +67,9 @@
         android:id="@+id/confirmBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
         android:onClick="confirmClicked"
         android:text="Confirm"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tileBar"
         app:layout_constraintTop_toBottomOf="@+id/tileBar" />
 
     <LinearLayout
@@ -68,19 +77,20 @@
         android:layout_width="72dp"
         android:layout_height="37dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
         android:background="@drawable/swap"
+        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tileBar"
         app:layout_constraintTop_toBottomOf="@+id/tileBar"></LinearLayout>
 
     <TextView
         android:id="@+id/txtCurPlayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="132dp"
+        android:layout_width="283dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="16dp"
         android:capitalize="sentences"
+        android:gravity="center"
         android:text="currentPlayer"
         android:textColor="@color/red_500"
         android:textColorHighlight="@color/white"

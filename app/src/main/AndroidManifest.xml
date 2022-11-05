@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QwirkleGame">
         <activity
+            android:name=".ResultsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".WaitingRoom"
             android:exported="false" />
         <activity

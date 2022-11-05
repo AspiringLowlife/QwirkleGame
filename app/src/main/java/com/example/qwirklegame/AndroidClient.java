@@ -17,6 +17,7 @@ public class AndroidClient extends Thread {
     private final String connectionString;
     private Player player;
     private ArrayList<Tile> board;
+    private ArrayList<Player> players;
     private boolean isConnected;
     private boolean areExistingGames;
 
@@ -93,6 +94,8 @@ public class AndroidClient extends Thread {
         //Checking if any existing games for menuActivity
         else if(serverResponse.getClass().equals(String.class)){
             areExistingGames=true;
+        }else if(serverResponse.getClass().equals(ArrayList.class)){
+            players=(ArrayList<Player>) serverResponse;
         }
     }
 
@@ -118,6 +121,10 @@ public class AndroidClient extends Thread {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 }
 
