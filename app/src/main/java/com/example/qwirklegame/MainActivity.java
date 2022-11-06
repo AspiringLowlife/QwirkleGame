@@ -39,6 +39,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     //        public GameModel game;
+    private TextView txtScore;
     private LinearLayout handView, swapTarget;
     private LinearLayout boardView;
     private List<ImageView> handViewCopy = new ArrayList<>();
@@ -57,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
         handView = findViewById(R.id.tileBar);
         swapTarget = findViewById(R.id.swapTarget);
         boardView = findViewById(R.id.dropTarget);
+        txtScore=findViewById(R.id.txtScore);
         Bundle extras = this.getIntent().getExtras();
         player = (Player) extras.get("player");
         btnConfirm = findViewById(R.id.confirmBtn);
-        btnCancel=findViewById(R.id.cancelBtn);
+        btnCancel = findViewById(R.id.cancelBtn);
         setTilesAndListeners(handView, swapTarget, boardView);
     }
 
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         player = androidClient.getPlayer();
         myBoard = androidClient.getBoard();
         fillHandView();
+        txtScore.setText("Score: "+player.getScore());
         PlayerRequest playerRequest = new PlayerRequest("CheckTurn", player);
         TimerTask timerTask = new TimerTask(playerRequest, ConnectActivity.connectionString, this);
         timerTask.execute();
@@ -304,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
         protected Object doInBackground(Object... request) {
             while (!conditionMet) {
                 runClient();
-                if(isCancelled)break;
+                if (isCancelled) break;
             }
             return board;
         }
@@ -325,8 +328,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("player", (Player) player);
                 context.startActivity(intent);
                 return;
-            }
-            else if(isCancelled){
+            } else if (isCancelled) {
                 Intent intent = new Intent(context, MenuActivity.class);
                 context.startActivity(intent);
             }

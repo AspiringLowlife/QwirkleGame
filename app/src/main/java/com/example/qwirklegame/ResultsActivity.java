@@ -15,10 +15,13 @@ import com.codewithbill.Player;
 import com.codewithbill.PlayerRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ResultsActivity extends AppCompatActivity {
 
     LinearLayout table;
+    Player player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,8 @@ public class ResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_results);
         table = findViewById(R.id.bigBox);
         Bundle extras = this.getIntent().getExtras();
-        Player player = (Player) extras.get("player");
-        PlayerRequest playerRequest = new PlayerRequest("GetAllPlayers",player );
+        player = (Player) extras.get("player");
+        PlayerRequest playerRequest = new PlayerRequest("GetAllPlayers", player);
         AndroidClient androidClient = new AndroidClient(playerRequest, ConnectActivity.connectionString);
         androidClient.start();
         while (!androidClient.getState().equals(Thread.State.TERMINATED)) {
@@ -42,7 +45,10 @@ public class ResultsActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 1.0f
         );
-        int c=1;
+        //sort players list into descending order by score
+        Collections.sort(players);
+
+        int c = 1;
         for (Player player : players) {
             LinearLayout playerRow = new LinearLayout(this);
             playerRow.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -50,12 +56,15 @@ public class ResultsActivity extends AppCompatActivity {
             TextView playerName = new TextView(this);
             playerName.setLayoutParams(param);
             playerName.setGravity(Gravity.CENTER);
-            playerName.setText("player "+c);
+            if (player.getScore().equals(this.player.getScore())) {
+                playerName.setText("player " + c + "(you)");
+            } else playerName.setText("player " + c);
+
 
             TextView score = new TextView(this);
             score.setLayoutParams(param);
             score.setGravity(Gravity.CENTER);
-            score.setText("0");
+            score.setText(player.getScore().toString());
             playerRow.addView(playerName);
             playerRow.addView(score);
             table.addView(playerRow);
