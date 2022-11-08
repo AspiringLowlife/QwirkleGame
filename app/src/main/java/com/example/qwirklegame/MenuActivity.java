@@ -75,7 +75,7 @@ public class MenuActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
             startActivity(getIntent());
             overridePendingTransition(0, 0);
-            Toast.makeText(this, "That Game cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "That Game is unavailable", Toast.LENGTH_SHORT).show();
         }
     }
 

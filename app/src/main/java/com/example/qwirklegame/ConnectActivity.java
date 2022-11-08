@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codewithbill.Player;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class ConnectActivity extends AppCompatActivity {
 
     //TODO remove static declaration
-    public static String connectionString = "10.0.0.11";
+    public static String connectionString="10.0.0.11";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class ConnectActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(view -> {
             Intent intent = new Intent(this, MenuActivity.class);
 //            String connectionString=textIP.getText().toString();
-            // connectionString=textIP.getText().toString();
+//            connectionString = textIP.getText().toString();
 
             //Pass requested players for multiplayer passing just an int will create a new player
             AndroidClient androidClient = new AndroidClient("CheckConnection", connectionString);
@@ -38,7 +39,8 @@ public class ConnectActivity extends AppCompatActivity {
             //go to menu
             if (androidClient.getIsConnected()) {
                 this.startActivity(intent);
-            }
+            } else
+                Toast.makeText(this, "Re-enter correct IP", Toast.LENGTH_SHORT).show();
         });
     }
 }

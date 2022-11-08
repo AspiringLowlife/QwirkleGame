@@ -38,7 +38,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    //        public GameModel game;
     private TextView txtScore;
     private LinearLayout handView, swapTarget;
     private LinearLayout boardView;
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//         game = new GameModel(1);
         handView = findViewById(R.id.tileBar);
         swapTarget = findViewById(R.id.swapTarget);
         boardView = findViewById(R.id.dropTarget);

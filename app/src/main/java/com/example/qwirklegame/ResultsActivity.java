@@ -56,10 +56,11 @@ public class ResultsActivity extends AppCompatActivity {
             TextView playerName = new TextView(this);
             playerName.setLayoutParams(param);
             playerName.setGravity(Gravity.CENTER);
-            if (player.getScore().equals(this.player.getScore())) {
+//            if (player.getScore().equals(this.player.getScore())) {
+//                playerName.setText("player " + c + "(you)");
+            if(this.player.getPlayerID()==player.getPlayerID()){
                 playerName.setText("player " + c + "(you)");
             } else playerName.setText("player " + c);
-
 
             TextView score = new TextView(this);
             score.setLayoutParams(param);

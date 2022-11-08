@@ -69,7 +69,7 @@ public class AndroidClient extends Thread {
 
     private void processConnection() throws IOException, ClassNotFoundException {
         System.out.println("Server message: " + input.readObject());
-        isConnected=true;
+        isConnected = true;
 
         //send request to server
         output.writeObject(request);
@@ -84,22 +84,22 @@ public class AndroidClient extends Thread {
         if (serverResponse.getClass().equals(Player.class)) {
             Player player = (Player) serverResponse;
             setPlayer(player);
-            areExistingGames=true;
+            areExistingGames = true;
         }
         //Receiving board state and updated hand for mainActivity
-        else if(serverResponse.getClass().equals(MoveResponse.class)){
-            MoveResponse moveResponse= (MoveResponse) serverResponse;
+        else if (serverResponse.getClass().equals(MoveResponse.class)) {
+            MoveResponse moveResponse = (MoveResponse) serverResponse;
             setBoard(moveResponse.board);
             setPlayer(moveResponse.player);
         }
         //Checking if any existing games for menuActivity and join exisitng check
-        else if(serverResponse.getClass().equals(String.class)){
-            if(serverResponse.equals("Yep")){
-                areExistingGames=true;
-            }else areExistingGames=false;
-
-        }else if(serverResponse.getClass().equals(ArrayList.class)){
-            players=(ArrayList<Player>) serverResponse;
+        else if (serverResponse.getClass().equals(String.class)) {
+            if (serverResponse.equals("Yep")) {
+                areExistingGames = true;
+            } else areExistingGames = false;
+        }
+        else if (serverResponse.getClass().equals(ArrayList.class)) {
+            players = (ArrayList<Player>) serverResponse;
         }
     }
 
@@ -111,11 +111,11 @@ public class AndroidClient extends Thread {
         this.board = board;
     }
 
-    public boolean getIsConnected(){
+    public boolean getIsConnected() {
         return isConnected;
     }
 
-    public boolean getAreExistingGames(){
+    public boolean getAreExistingGames() {
         return areExistingGames;
     }
 
