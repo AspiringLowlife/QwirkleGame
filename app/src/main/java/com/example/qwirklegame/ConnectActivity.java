@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class ConnectActivity extends AppCompatActivity {
 
-    public static String connectionString;
+    public static String connectionString="10.0.0.11";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class ConnectActivity extends AppCompatActivity {
 
         btnConnect.setOnClickListener(view -> {
             Intent intent = new Intent(this, MenuActivity.class);
-            connectionString = textIP.getText().toString();
+//            connectionString = textIP.getText().toString();
 
             //Pass requested players for multiplayer passing just an int will create a new player
             AndroidClient androidClient = new AndroidClient("CheckConnection", connectionString);

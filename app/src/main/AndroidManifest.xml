@@ -19,14 +19,14 @@
             android:name=".WaitingRoom"
             android:exported="false" />
         <activity
-            android:name=".MenuActivity"
+            android:name=".ConnectActivity"
             android:exported="false"
             android:parentActivityName=".ConnectActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ConnectActivity"
+            android:name=".MenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

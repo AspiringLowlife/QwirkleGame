@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView txtScore;
     private LinearLayout handView, swapTarget;
-    private LinearLayout boardView;
+    //board fields
+    LinearLayout outer;
     private List<ImageView> handViewCopy = new ArrayList<>();
     private Player player;
     private ArrayList<Tile> myBoard = new ArrayList<>();
@@ -55,13 +56,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         handView = findViewById(R.id.tileBar);
         swapTarget = findViewById(R.id.swapTarget);
-        boardView = findViewById(R.id.dropTarget);
-        txtScore=findViewById(R.id.txtScore);
+        //Board
+        outer = findViewById(R.id.outer);
+        txtScore = findViewById(R.id.txtScore);
         Bundle extras = this.getIntent().getExtras();
         player = (Player) extras.get("player");
         btnConfirm = findViewById(R.id.confirmBtn);
         btnCancel = findViewById(R.id.cancelBtn);
-        setTilesAndListeners(handView, swapTarget, boardView);
+        setTilesAndListeners(handView, swapTarget);
     }
 
     public void confirmClicked(View view) {
@@ -84,20 +86,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //check for tiles placed on board
         else if (isHandOnBoard()) {
-            for (int i = 0; i < boardView.getChildCount(); i++) {
-                for (int j = 0; j < handViewCopy.size(); j++) {
-                    if (boardView.getChildAt(i).equals(handViewCopy.get(j))) {
-                        int resId = (int) boardView.getChildAt(i).getTag();
-                        String drawableName = this.getResources().getResourceEntryName(resId);
-                        for (Tile tile : hand) {
-                            if (tile.toString().equals(drawableName)) {
-                                tile.setState(Tile.State.placing);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            hand = placeTiles(hand);
         }
         //checks if any move was made prior to pressing confirm btn
         if (checkForNoAction(hand)) {
@@ -116,14 +105,14 @@ public class MainActivity extends AppCompatActivity {
         player = androidClient.getPlayer();
         myBoard = androidClient.getBoard();
         fillHandView();
-        txtScore.setText("Score: "+player.getScore());
+        txtScore.setText("Score: " + player.getScore());
         PlayerRequest playerRequest = new PlayerRequest("CheckTurn", player);
         TimerTask timerTask = new TimerTask(playerRequest, ConnectActivity.connectionString, this);
         timerTask.execute();
     }
 
     //add drag and drop and sets initial tiles from initial player hand
-    private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget, ViewGroup boardTarget) {
+    private void setTilesAndListeners(LinearLayout tileBar, LinearLayout swapTarget) {
         //setting the image for tiles in hand initially
         fillHandView();
         //check if current player initial
@@ -132,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         timerTask.execute();
 
         //Target Listeners dropping tiles into
-        boardTarget.setOnDragListener(new MyDragListener());
+
         tileBar.setOnDragListener(new MyDragListener());
         swapTarget.setOnDragListener(new MyDragListener());
     }
@@ -155,33 +144,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fillBoard(ArrayList<Tile> board) {
-        //fill pieces player knows about
-        for (int j = 0; j < board.size(); j++) {
-            //creating image view to fill into Board
-            ImageView viewTile = new ImageView(this);
-            viewTile.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            String drawableName = board.get(j).toString();
-            viewTile.setImageResource(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
 
-            //highlight pieces added by opponent
-            if (j > myBoard.size() - 1) {
-                viewTile.setBackgroundResource(R.color.green_highlight);
-                viewTile.setPadding(5, 5, 5, 5);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        //fill board
+        for (int i = 0; i < 20; i++) {
+            LinearLayout col = new LinearLayout(this);
+            col.setOrientation(LinearLayout.VERTICAL);
+            for (int j = 0; j < 20; j++) {
+                LinearLayout cell = new LinearLayout(this);
+                cell.setBackgroundResource(R.color.purple_200);
+                params.setMargins(20, 20, 20, 20);
+                cell.setLayoutParams(params);
+                cell.setPadding(54, 54, 54, 54);
+                cell.setOnDragListener(new MyDragListener());
+                //fill cell with tile if present
+                for (Tile tile : board) {
+                    if (tile.row == j && tile.col == i) {
+                        ImageView viewTile = new ImageView(this);
+                        viewTile.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        String drawableName = tile.toString();
+                        viewTile.setImageResource(getResources().getIdentifier(
+                                drawableName, "drawable", this.getPackageName()));
+
+                        //attaching resource id as tag
+                        viewTile.setTag(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
+                        //highlight pieces of other player
+                        if (isNewPiece(tile)) {
+                            viewTile.setBackgroundResource(R.color.green_highlight);
+                            viewTile.setPadding(6, 6, 6, 6);
+                        }
+                        cell.addView(viewTile);
+                        cell.setPadding(0, 0, 0, 0);
+                        break;
+                    }
+                }
+                col.addView(cell);
             }
-
-            //attaching resource id as tag
-            viewTile.setTag(getResources().getIdentifier(drawableName, "drawable", this.getPackageName()));
-            viewTile.setOnTouchListener(new MyTouchListener());
-            this.boardView.addView(viewTile);
+            outer.addView(col);
         }
+    }
+
+    private boolean isNewPiece(Tile checkTile) {
+        int row = checkTile.row;
+        int col = checkTile.col;
+        for (Tile tile : myBoard) {
+            if (tile.row == row && tile.col == col) return false;
+        }
+        return true;
     }
 
     private boolean isHandOnBoard() {
         try {
-            for (int i = 0; i < boardView.getChildCount(); i++) {
-                //board has current player's tiles from hand on board
-                for (int j = 0; j < handViewCopy.size(); j++) {
-                    if (boardView.getChildAt(i).equals(handViewCopy.get(j))) return true;
+            for (int i = 0; i < outer.getChildCount(); i++) {
+                LinearLayout col = (LinearLayout) outer.getChildAt(i);
+                for (int j = 0; j < col.getChildCount(); j++) {
+                    LinearLayout cell = (LinearLayout) col.getChildAt(j);
+                    if (cell.getChildCount() < 1) {
+                        continue;
+                    } else {
+                        for (int c = 0; c < handViewCopy.size(); c++) {
+                            if (cell.getChildAt(0).equals(handViewCopy.get(c))) return true;
+                        }
+                    }
                 }
             }
             return false;
@@ -189,6 +218,53 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    private ArrayList<Tile> placeTiles(ArrayList<Tile> hand) {
+        for (int i = 0; i < outer.getChildCount(); i++) {
+            LinearLayout col = (LinearLayout) outer.getChildAt(i);
+            for (int j = 0; j < col.getChildCount(); j++) {
+                LinearLayout cell = (LinearLayout) col.getChildAt(j);
+                if (cell.getChildCount() < 1) {
+                    continue;
+                } else {
+                    for (int c = 0; c < handViewCopy.size(); c++) {
+                        if (cell.getChildAt(0).equals(handViewCopy.get(c))) {
+                            int resId = (int) cell.getChildAt(0).getTag();
+                            String drawableName = this.getResources().getResourceEntryName(resId);
+                            for (Tile tile : hand) {
+                                if (tile.toString().equals(drawableName)) {
+                                    tile.row = j;
+                                    tile.col = i;
+                                    tile.setState(Tile.State.placing);//this will go onto board in server
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return hand;
+    }
+//        for (int i = 0; i < boardView.getChildCount(); i++) {
+//            for (int j = 0; j < handViewCopy.size(); j++) {
+//                if (boardView.getChildAt(i).equals(handViewCopy.get(j))) {
+//                    int resId = (int) boardView.getChildAt(i).getTag();
+//                    String drawableName = this.getResources().getResourceEntryName(resId);
+//                    for (Tile tile : hand) {
+//                        if (tile.toString().equals(drawableName)) {
+//                            tile.setState(Tile.State.placing);
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+//    private ArrayList<String> getBoardList() {
+//    }
 
     private boolean isTileInHand(View viewTile) {
         String drawableName = this.getResources().getResourceEntryName((int) viewTile.getTag());
@@ -250,12 +326,17 @@ public class MainActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DROP:
                     // Dropped, reassign View to ViewGroup
                     int diff = 6 - swapTarget.getChildCount();
-                    if (v.equals(boardView) && swapTarget.getChildCount() == 0 || v.equals(swapTarget) && handView.getChildCount() == diff || v.equals(handView)) {
+                    if (isTileOnBoard(v) && swapTarget.getChildCount() == 0 || v.equals(swapTarget) && handView.getChildCount() == diff || v.equals(handView)) {
+
                         View view = (View) event.getLocalState();
                         ViewGroup owner = (ViewGroup) view.getParent();
                         owner.removeView(view);
+                        if (owner != handView) {
+                            owner.setPadding(54, 54, 54, 54);
+                        }
                         LinearLayout container = (LinearLayout) v;
                         container.addView(view);
+                        container.setPadding(0, 0, 0, 0);
                         view.setVisibility(View.VISIBLE);
                     }
                     break;
@@ -265,7 +346,13 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
+
+        private boolean isTileOnBoard(View v) {
+            return v.getParent().getParent() == outer;
+
+        }
     }
+
 
     public class TimerTask extends AsyncTask<Object, Object, Object> {
         private final Object request;
@@ -288,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
             informPlayer("OPPONENT'S TURN");
             btnCancel.setVisibility(View.INVISIBLE);
             btnConfirm.setVisibility(View.INVISIBLE);
-            handView.setVisibility(View.INVISIBLE);
+            outer.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -320,12 +407,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, MenuActivity.class);
                 context.startActivity(intent);
             }
-            boardView.removeAllViews();
+//            boardView.removeAllViews();
+            //clear board
+            outer.removeAllViews();
             //unlock controls and update textBox
             informPlayer("YOUR TURN");
             fillBoard(this.board);
             btnCancel.setVisibility(View.VISIBLE);
-            handView.setVisibility(View.VISIBLE);
+            outer.setVisibility(View.VISIBLE);
             btnConfirm.setVisibility(View.VISIBLE);
         }
 

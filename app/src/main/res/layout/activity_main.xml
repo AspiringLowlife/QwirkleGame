@@ -7,21 +7,28 @@
     android:background="@color/blue_200"
     tools:context=".MainActivity">
 
-    <!--    <TableLayout-->
-    <!--        android:id="@+id/dropTarget"-->
-    <!--        android:layout_width="383dp"-->
-    <!--        android:layout_height="413dp"-->
-    <!--        android:layout_marginTop="32dp"-->
-    <!--        android:layout_marginBottom="16dp"-->
-    <!--        android:background="@color/purple_200"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/tileBar"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.461"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="0.896">-->
+    <HorizontalScrollView
+        android:id="@+id/horizontal"
+        android:layout_width="357dp"
+        android:layout_height="385dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtScore">
 
-    <!--    </TableLayout>-->
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/outer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!--                android:padding="20sp">-->
+            </LinearLayout>
+        </ScrollView>
+    </HorizontalScrollView>
 
     <ImageView
         android:id="@+id/cancelBtn"
@@ -33,20 +40,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/cancel" />
-
-    <LinearLayout
-        android:id="@+id/dropTarget"
-        android:layout_width="340dp"
-        android:layout_height="384dp"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:background="@color/purple_200"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCurPlayer"/>
 
     <LinearLayout
         android:id="@+id/tileBar"
@@ -103,9 +96,10 @@
         android:id="@+id/txtScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="48dp"
         android:text="Score: "
-        app:layout_constraintBottom_toTopOf="@+id/dropTarget"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCurPlayer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
