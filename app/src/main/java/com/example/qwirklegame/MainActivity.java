@@ -120,16 +120,6 @@ public class MainActivity extends AppCompatActivity {
         PlayerRequest playerRequest = new PlayerRequest("CheckTurn", player);
         TimerTask timerTask = new TimerTask(playerRequest, ConnectActivity.connectionString, this);
         timerTask.execute();
-
-        //Todo remove
-//        player.setHand(new ArrayList<>());
-//
-//        //Hand empty check if game is done
-//        if(player.getHand().isEmpty()){
-//            PlayerRequest playerRequest1 = new PlayerRequest("IsGameOver", player);
-//            TimerTask timerTask1 = new TimerTask(playerRequest1, ConnectActivity.connectionString, this);
-//            timerTask1.execute();
-//        }
     }
 
     //add drag and drop and sets initial tiles from initial player hand
