@@ -407,7 +407,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, MenuActivity.class);
                 context.startActivity(intent);
             }
-//            boardView.removeAllViews();
             //clear board
             outer.removeAllViews();
             //unlock controls and update textBox
